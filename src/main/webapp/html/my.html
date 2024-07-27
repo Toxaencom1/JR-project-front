@@ -1,11 +1,157 @@
-<html>
+<html lang="RU">
 <head>
     <title>RPG</title>
+    <meta charset="UTF-8">
     <script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
     <link href="/css/my.css" rel="stylesheet">
 </head>
 <body>
 <h1>RPG admin panel</h1>
+<h2>Accounts list:</h2>
+
+<span><label for="selection">Count per page: </label><select id="selection" name="number per page">
+    <option value="3">3</option>
+    <option value="5">5</option>
+    <option value="10">10</option>
+    <option value="20">20</option>
+
+</select>
+    </span>
+
+<table id="table">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Race</th>
+        <th>Profession</th>
+        <th>Level</th>
+        <th>Birthday</th>
+        <th>Banned</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div id="pagination" class="pagination">
+</div>
 
 </body>
+
+<script>
+    let pageSize = 3;
+    let totalAccounts = 0;
+    let currentPage = 0;
+    // let previousPage = 0;
+
+
+    $(document).ready(function () {
+        totalAccounts = getTotalServerAccounts();
+        getPlayers(pageSize, currentPage);
+        createPaginationButtons(pageSize, 0);
+    });
+
+
+    function getPlayers(pageSize, pageNumber) {
+        if (pageNumber == null) {
+            pageNumber = 0;
+        }
+        $.get('/rest/players?pageSize=' + pageSize + '&pageNumber=' + pageNumber, function (data) {
+            $('#table tbody').empty();
+            $.each(data, function (index, player) {
+                const birthday = new Date(player.birthday).toLocaleDateString();
+                const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${player.name}</td>
+                            <td>${player.title}</td>
+                            <td>${player.race}</td>
+                            <td>${player.profession}</td>
+                            <td>${player.level}</td>
+                            <td>${birthday}</td>
+                            <td>${player.banned}</td>
+                            <td><button class="edit"></button></td>
+                            <td><button class="delete"></button></td>
+                        </tr>
+                    `;
+
+                $('#table tbody').append(row);
+            });
+        }).fail(function () {
+            console.error('Error fetching data.');
+        });
+        createPaginationButtons(pageSize, pageNumber);
+    }
+
+
+    function createPaginationButtons(pageSize, pageNumber) {
+        let getTotal = getTotalServerAccounts();
+        const totalPages = Math.ceil(getTotal / pageSize);
+        const $pagination = $('#pagination');
+        $pagination.empty();
+
+        for (let i = 0; i < totalPages; i++) {
+            const button = $('<button>')
+                .text(i + 1)
+                .attr('data-page', i)
+                .click(function () {
+                    currentPage = i;
+                    reDraw();
+                });
+
+            if (i === pageNumber) {
+                button.addClass('activePage');
+            }
+            $pagination.append(button);
+        }
+    }
+
+
+    function getTotalServerAccounts() {
+        let res = 0;
+        let url = "/rest/players/count";
+        $.ajax({
+            url: url,
+            async: false,
+            success: function (result) {
+                res = parseInt(result, 10);
+            }
+        })
+        console.log(res);
+        return res;
+    }
+
+    function getTotalPages(pageSize) {
+        const totalAccounts = getTotalServerAccounts();
+        return Math.ceil(totalAccounts / pageSize);
+    }
+
+    function reDraw() {
+        getPlayers(pageSize, currentPage);
+        createPaginationButtons(pageSize, currentPage);
+    }
+
+    function initializeSelectHandler() {
+        const selectElement = document.getElementById('selection');
+        selectElement.addEventListener('change', function () {
+            const selectedValue = selectElement.value;
+            pageSize = parseInt(selectedValue, 10);
+            const totalPages = getTotalPages(pageSize);
+            if (currentPage > totalPages) {
+                currentPage = 0;
+            }
+            reDraw();
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initializeSelectHandler();
+    });
+
+</script>
+
 </html>
