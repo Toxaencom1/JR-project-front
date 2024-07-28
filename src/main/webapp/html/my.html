@@ -9,14 +9,14 @@
 <h1>RPG admin panel</h1>
 <h2>Accounts list:</h2>
 
-<span><label for="selection">Count per page: </label><select id="selection" name="number per page">
+<label for="selection">Count per page: </label>
+<select id="selection" name="number per page">
     <option value="3">3</option>
     <option value="5">5</option>
     <option value="10">10</option>
     <option value="20">20</option>
-
 </select>
-    </span>
+
 
 <table id="table">
     <thead>
@@ -46,36 +46,30 @@
     let pageSize = 3;
     let totalAccounts = 0;
     let currentPage = 0;
-    // let previousPage = 0;
-
 
     $(document).ready(function () {
         totalAccounts = getTotalServerAccounts();
-        getPlayers(pageSize, currentPage);
-        createPaginationButtons(pageSize, 0);
+        reDraw()
     });
 
 
     function getPlayers(pageSize, pageNumber) {
-        if (pageNumber == null) {
-            pageNumber = 0;
-        }
         $.get('/rest/players?pageSize=' + pageSize + '&pageNumber=' + pageNumber, function (data) {
             $('#table tbody').empty();
             $.each(data, function (index, player) {
                 const birthday = new Date(player.birthday).toLocaleDateString();
                 const row = `
                         <tr>
-                            <td>${index + 1}</td>
+                            <td>${player.id}</td>
                             <td>${player.name}</td>
                             <td>${player.title}</td>
                             <td>${player.race}</td>
                             <td>${player.profession}</td>
                             <td>${player.level}</td>
                             <td>${birthday}</td>
-                            <td>${player.banned}</td>
-                            <td><button class="edit"></button></td>
-                            <td><button class="delete"></button></td>
+                            <td>${player.banned}</td>'+'
+                            <td><button id="edit` + player.id + `" class="edit" ></button></td>
+                            <td><button id="delete` + player.id + `" class="delete" onclick='deleteAccount(` + player.id + `)'></button></td>
                         </tr>
                     `;
 
@@ -86,7 +80,6 @@
         });
         createPaginationButtons(pageSize, pageNumber);
     }
-
 
     function createPaginationButtons(pageSize, pageNumber) {
         let getTotal = getTotalServerAccounts();
@@ -109,7 +102,6 @@
             $pagination.append(button);
         }
     }
-
 
     function getTotalServerAccounts() {
         let res = 0;
@@ -145,6 +137,16 @@
                 currentPage = 0;
             }
             reDraw();
+        });
+    }
+
+    function deleteAccount(playerId) {
+        $.ajax({
+            url: `/rest/players/${playerId}`,
+            type: 'DELETE',
+            success: function() {
+                reDraw()
+            }
         });
     }
 
