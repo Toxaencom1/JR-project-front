@@ -169,9 +169,6 @@
             $edit.removeClass();
             $edit.addClass('editClicked');
 
-            $name.data('original', $name.text());
-            $title.data('original', $title.text());
-
             $name.html('<input type="text" id="nameEdit-'+id+'" value="' + $name.text() + '">');
             $title.html('<input type="text" id="titleEdit-'+id+'" value="' + $title.text() + '">');
 
@@ -221,7 +218,7 @@
             profession: $('#professionEdit-' + id).val(),
             banned: $('#bannedEdit-' + id).val()
         };
-        alert(JSON.stringify(updatedPlayer, null, 2));
+        // alert(JSON.stringify(updatedPlayer, null, 2));
         $.ajax({
             url: `/rest/players/${id}`,
             type: 'POST',
@@ -233,6 +230,7 @@
             error: function () {
                 alert("ERROR");
                 console.error('Error saving data.');
+                reDraw();
             }
         });
     }
