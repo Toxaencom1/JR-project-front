@@ -30,6 +30,17 @@
     cursor: pointer;
     outline: none;
 }
+.editClicked{
+    background-image: url('../img/save.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 50px;
+    height: 50px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
 
 .delete{
     background-image: url('../img/delete.png');

@@ -61,15 +61,15 @@
                 const row = `
                         <tr>
                             <td>${player.id}</td>
-                            <td>${player.name}</td>
-                            <td>${player.title}</td>
-                            <td>${player.race}</td>
-                            <td>${player.profession}</td>
+                            <td id="name-${player.id}">${player.name}</td>
+                            <td id="title-${player.id}">${player.title}</td>
+                            <td id="race-${player.id}">${player.race}</td>
+                            <td id="profession-${player.id}">${player.profession}</td>
                             <td>${player.level}</td>
                             <td>${birthday}</td>
-                            <td>${player.banned}</td>'+'
-                            <td><button id="edit` + player.id + `" class="edit" ></button></td>
-                            <td><button id="delete` + player.id + `" class="delete" onclick='deleteAccount(` + player.id + `)'></button></td>
+                            <td id="banned-${player.id}">${player.banned}</td>'+'
+                            <td><button id="edit${player.id}" class="edit" onclick='clickOnEdit(${player.id})'></button></td>
+                            <td><button id="delete${player.id}" class="delete" onclick='deleteAccount(${player.id})'></button></td>
                         </tr>
                     `;
 
@@ -146,6 +146,93 @@
             type: 'DELETE',
             success: function() {
                 reDraw()
+            }
+        });
+    }
+
+    function clickOnEdit(id){
+        let $edit = $('#edit'+id);
+        let $name = $("#name-" + id);
+        let $title = $("#title-" + id);
+        let $race = $("#race-" + id);
+        let $profession = $("#profession-" + id);
+        let $banned = $("#banned-" + id);
+
+        const button = document.getElementById('delete' + id);
+        if ($edit.hasClass("editClicked")){
+            save(id);
+            $edit.removeClass();
+            $edit.addClass('edit');
+            $(button).show();
+        } else {
+            $(button).hide();
+            $edit.removeClass();
+            $edit.addClass('editClicked');
+
+            $name.data('original', $name.text());
+            $title.data('original', $title.text());
+
+            $name.html('<input type="text" id="nameEdit-'+id+'" value="' + $name.text() + '">');
+            $title.html('<input type="text" id="titleEdit-'+id+'" value="' + $title.text() + '">');
+
+            let raceOptions = '<select id="raceEdit-'+id+'">' +
+                '<option value="HUMAN">Human</option>' +
+                '<option value="DWARF">Dwarf</option>' +
+                '<option value="ELF">Elf</option>' +
+                '<option value="GIANT">Giant</option>' +
+                '<option value="ORC">Orc</option>' +
+                '<option value="TROLL">Troll</option>' +
+                '<option value="HOBBIT">Hobbit</option>' +
+                '</select>';
+            let raceText = $race.text();
+            $race.html(raceOptions);
+            $('#raceEdit-'+id).val(raceText);
+
+            let professionOptions = '<select id="professionEdit-'+id+'">' +
+                '<option value="WARRIOR">WARRIOR</option>' +
+                '<option value="ROGUE">ROGUE</option>' +
+                '<option value="SORCERER">SORCERER</option>' +
+                '<option value="CLERIC">CLERIC</option>' +
+                '<option value="PALADIN">PALADIN</option>' +
+                '<option value="NAZGUL">NAZGUL</option>' +
+                '<option value="WARLOCK">WARLOCK</option>' +
+                '<option value="DRUID">DRUID</option>' +
+                '</select>';
+            let professionText = $profession.text();
+            $profession.html(professionOptions);
+            $('#professionEdit-'+id).val(professionText);
+
+            let bannedSelector = '<select id="bannedEdit-'+id+'">' +
+                '<option value="true">true</option>' +
+                '<option value="false">false</option>' +
+                '</select>';
+            let bannedText = $banned.text();
+            $banned.html(bannedSelector);
+            $('#bannedEdit-'+id).val(bannedText);
+        }
+    }
+
+    function save(id) {
+        let updatedPlayer = {
+            id: id,
+            name: $('#nameEdit-' + id).val(),
+            title: $('#titleEdit-' + id).val(),
+            race: $('#raceEdit-' + id).val(),
+            profession: $('#professionEdit-' + id).val(),
+            banned: $('#bannedEdit-' + id).val()
+        };
+        alert(JSON.stringify(updatedPlayer, null, 2));
+        $.ajax({
+            url: `/rest/players/${id}`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedPlayer),
+            success: function () {
+                reDraw();
+            },
+            error: function () {
+                alert("ERROR");
+                console.error('Error saving data.');
             }
         });
     }
