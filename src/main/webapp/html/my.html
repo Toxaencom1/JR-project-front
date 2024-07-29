@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="RU">
 <head>
     <title>RPG</title>
@@ -38,6 +39,52 @@
 </table>
 
 <div id="pagination" class="pagination">
+</div>
+
+<div id="inputField">
+    <h3>Create new account: </h3>
+
+    <label for="inputName">Name: </label>
+    <input id="inputName" type="text" maxlength="12"><br><br>
+    <label for="inputTitle">Title: </label>
+    <input id="inputTitle" type="text" maxlength="30"><br><br>
+    <label for="inputRace">Race: </label>
+    <select id="inputRace">
+        <option value="HUMAN">HUMAN</option>
+        <option value="DWARF">DWARF</option>
+        <option value="ELF">ELF</option>
+        <option value="GIANT">GIANT</option>
+        <option value="ORC">ORC</option>
+        <option value="TROLL">TROLL</option>
+        <option value="HOBBIT">HOBBIT</option>
+    </select><br><br>
+    <label for="inputProfession">Profession: </label>
+    <select id="inputProfession">
+        <option value="WARRIOR">WARRIOR</option>
+        <option value="ROGUE">ROGUE</option>
+        <option value="SORCERER">SORCERER</option>
+        <option value="CLERIC">CLERIC</option>
+        <option value="PALADIN">PALADIN</option>
+        <option value="NAZGUL">NAZGUL</option>
+        <option value="WARLOCK">WARLOCK</option>
+        <option value="DRUID">DRUID</option>
+    </select><br><br>
+    <label for="inputLevel">Level: </label>
+    <input type="number" id="inputLevel" min="0" max="100"><br><br>
+
+    <label for="inputBirthday">Birthday:</label>
+    <input type="date" id="inputBirthday"><br><br>
+
+    <label for="inputBanned">Banned: </label>
+    <select id="inputBanned">
+        <option value="TRUE">True</option>
+        <option value="FALSE">False</option>
+    </select><br><br>
+
+    <label for="saveButton">Save</label>
+    <button id="saveButton" onclick="createNewAccount()" class="editClicked"></button>
+
+
 </div>
 
 </body>
@@ -141,17 +188,20 @@
     }
 
     function deleteAccount(playerId) {
-        $.ajax({
-            url: `/rest/players/${playerId}`,
-            type: 'DELETE',
-            success: function() {
-                reDraw()
-            }
-        });
+        const userConfirmed = confirm("Are you sure you want to delete this Account?");
+        if (userConfirmed) {
+            $.ajax({
+                url: `/rest/players/${playerId}`,
+                type: 'DELETE',
+                success: function () {
+                    reDraw()
+                }
+            });
+        }
     }
 
-    function clickOnEdit(id){
-        let $edit = $('#edit'+id);
+    function clickOnEdit(id) {
+        let $edit = $('#edit' + id);
         let $name = $("#name-" + id);
         let $title = $("#title-" + id);
         let $race = $("#race-" + id);
@@ -159,8 +209,8 @@
         let $banned = $("#banned-" + id);
 
         const button = document.getElementById('delete' + id);
-        if ($edit.hasClass("editClicked")){
-            save(id);
+        if ($edit.hasClass("editClicked")) {
+            saveFromEdit(id);
             $edit.removeClass();
             $edit.addClass('edit');
             $(button).show();
@@ -169,23 +219,23 @@
             $edit.removeClass();
             $edit.addClass('editClicked');
 
-            $name.html('<input type="text" id="nameEdit-'+id+'" value="' + $name.text() + '">');
-            $title.html('<input type="text" id="titleEdit-'+id+'" value="' + $title.text() + '">');
+            $name.html('<input type="text" id="nameEdit-' + id + '" value="' + $name.text() + '" maxlength="12">');
+            $title.html('<input type="text" id="titleEdit-' + id + '" value="' + $title.text() + '" maxlength="30">');
 
-            let raceOptions = '<select id="raceEdit-'+id+'">' +
-                '<option value="HUMAN">Human</option>' +
-                '<option value="DWARF">Dwarf</option>' +
-                '<option value="ELF">Elf</option>' +
-                '<option value="GIANT">Giant</option>' +
-                '<option value="ORC">Orc</option>' +
-                '<option value="TROLL">Troll</option>' +
-                '<option value="HOBBIT">Hobbit</option>' +
+            let raceOptions = '<select id="raceEdit-' + id + '">' +
+                '<option value="HUMAN">HUMAN</option>' +
+                '<option value="DWARF">DWARF</option>' +
+                '<option value="ELF">ELF</option>' +
+                '<option value="GIANT">GIANT</option>' +
+                '<option value="ORC">ORC</option>' +
+                '<option value="TROLL">TROLL</option>' +
+                '<option value="HOBBIT">HOBBIT</option>' +
                 '</select>';
             let raceText = $race.text();
             $race.html(raceOptions);
-            $('#raceEdit-'+id).val(raceText);
+            $('#raceEdit-' + id).val(raceText);
 
-            let professionOptions = '<select id="professionEdit-'+id+'">' +
+            let professionOptions = '<select id="professionEdit-' + id + '">' +
                 '<option value="WARRIOR">WARRIOR</option>' +
                 '<option value="ROGUE">ROGUE</option>' +
                 '<option value="SORCERER">SORCERER</option>' +
@@ -197,42 +247,99 @@
                 '</select>';
             let professionText = $profession.text();
             $profession.html(professionOptions);
-            $('#professionEdit-'+id).val(professionText);
+            $('#professionEdit-' + id).val(professionText);
 
-            let bannedSelector = '<select id="bannedEdit-'+id+'">' +
+            let bannedSelector = '<select id="bannedEdit-' + id + '">' +
                 '<option value="true">true</option>' +
                 '<option value="false">false</option>' +
                 '</select>';
             let bannedText = $banned.text();
             $banned.html(bannedSelector);
-            $('#bannedEdit-'+id).val(bannedText);
+            $('#bannedEdit-' + id).val(bannedText);
         }
     }
 
-    function save(id) {
-        let updatedPlayer = {
-            id: id,
-            name: $('#nameEdit-' + id).val(),
-            title: $('#titleEdit-' + id).val(),
-            race: $('#raceEdit-' + id).val(),
-            profession: $('#professionEdit-' + id).val(),
-            banned: $('#bannedEdit-' + id).val()
-        };
-        // alert(JSON.stringify(updatedPlayer, null, 2));
-        $.ajax({
-            url: `/rest/players/${id}`,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedPlayer),
-            success: function () {
-                reDraw();
-            },
-            error: function () {
-                alert("ERROR");
-                console.error('Error saving data.');
-                reDraw();
-            }
-        });
+    function saveFromEdit(id) {
+        const userConfirmed = confirm("Confirm edit data?");
+        if (userConfirmed) {
+            let updatedPlayer = {
+                id: id,
+                name: $('#nameEdit-' + id).val(),
+                title: $('#titleEdit-' + id).val(),
+                race: $('#raceEdit-' + id).val(),
+                profession: $('#professionEdit-' + id).val(),
+                banned: $('#bannedEdit-' + id).val()
+            };
+            // alert(JSON.stringify(updatedPlayer, null, 2));
+            $.ajax({
+                url: `/rest/players/${id}`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedPlayer),
+                success: function () {
+                    reDraw();
+                },
+                error: function () {
+                    alert("ERROR");
+                    console.error('Error saving data.');
+                    reDraw();
+                }
+            });
+        }
+    }
+
+    function createNewAccount(){
+        const userConfirmed = confirm("Is the data correct?");
+        if (userConfirmed) {
+            let $name = $('#inputName');
+            let $title = $('#inputTitle');
+            let $race = $('#inputRace');
+            let $profession = $('#inputProfession');
+            let $level = $('#inputLevel');
+            let $birthday = $('#inputBirthday');
+            let $banned = $('#inputBanned');
+
+            const milliseconds = new Date($birthday.val()).getTime();
+            let banned = ($banned.val() === 'true');
+
+            let playerInfo = {
+                name: $name.val(),
+                title: $title.val(),
+                race: $race.val(),
+                profession: $profession.val(),
+                birthday: milliseconds,
+                banned: banned,
+                level: parseInt($level.val())
+            };
+            // alert(JSON.stringify(playerInfo, null, 2));
+
+            $.ajax({
+                url: `/rest/players`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(playerInfo),
+                success: function () {
+                    alert("Congratulations! Account created.");
+                    clearInputFields();
+                    reDraw();
+                },
+                error: function () {
+                    alert("ERROR");
+                    console.error('Error saving data.');
+                    reDraw();
+                }
+            });
+        }
+    }
+
+    function clearInputFields() {
+        $('#inputName').val('');
+        $('#inputTitle').val('');
+        $('#inputRace').val('HUMAN'); // Сбрасываем к первому значению по умолчанию
+        $('#inputProfession').val('WARRIOR'); // Сбрасываем к первому значению по умолчанию
+        $('#inputLevel').val('');
+        $('#inputBirthday').val('');
+        $('#inputBanned').val('FALSE'); // Сбрасываем к значению по умолчанию
     }
 
     window.addEventListener('DOMContentLoaded', () => {

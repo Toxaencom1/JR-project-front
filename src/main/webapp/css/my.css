@@ -1,36 +1,80 @@
-#table {
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+h2 {
+    margin-top: 20px;
+}
+
+h3 {
+    margin-top: 20px;
+}
+
+
+table {
+    width: 100%;
     border-collapse: collapse;
+    margin: 20px auto;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#table, #table th, #table td {
-    border: 1px solid black;
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
 }
 
-#table th, #table td {
-    padding: 10px;
-    text-align: left;
+thead {
+    background-color: #f4f4f4;
 }
 
-#table th {
-    background-color: #f2f2f2;
+tr:hover {
+    background-color: #f1f1f1;
 }
 
-.activePage{
-    background-color: red;
-    color: white;
-}
-.edit{
-    background-image: url('../img/edit.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 50px;
-    height: 50px;
+
+button {
+    padding: 8px 12px;
+    margin: 2px;
     border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
     cursor: pointer;
-    outline: none;
+    font-size: 14px;
 }
-.editClicked{
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button.edit {
+        background-image: url('../img/edit.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 50px;
+        height: 50px;
+        border: none;
+        cursor: pointer;
+        outline: none;
+}
+
+button.editClicked {
     background-image: url('../img/save.png');
     background-size: cover;
     background-repeat: no-repeat;
@@ -42,14 +86,129 @@
     outline: none;
 }
 
-.delete{
-    background-image: url('../img/delete.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 50px;
-    height: 50px;
-    border: none;
-    cursor: pointer;
-    outline: none;
+
+button.delete {
+        background-image: url('../img/delete.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 50px;
+        height: 50px;
+        border: none;
+        cursor: pointer;
+        outline: none;
 }
+
+
+
+select, input[type="text"], input[type="number"], input[type="date"] {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+
+#inputField {
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+}
+
+#pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#pagination button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#pagination button.activePage {
+    background-color: #0056b3;
+}
+
+#pagination button:hover {
+    background-color: #0056b3;
+}
+
+select {
+    width: 200px;
+    box-sizing: border-box;
+}
+
+/*#table {*/
+/*    border-collapse: collapse;*/
+/*}*/
+
+/*#table, #table th, #table td {*/
+/*    border: 1px solid black;*/
+/*}*/
+
+/*#table th, #table td {*/
+/*    padding: 10px;*/
+/*    text-align: left;*/
+/*}*/
+
+/*#table th {*/
+/*    background-color: #f2f2f2;*/
+/*}*/
+
+/*.activePage{*/
+/*    background-color: red;*/
+/*    color: white;*/
+/*}*/
+/*.edit{*/
+/*    background-image: url('../img/edit.png');*/
+/*    background-size: cover;*/
+/*    background-repeat: no-repeat;*/
+/*    background-position: center;*/
+/*    width: 50px;*/
+/*    height: 50px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    outline: none;*/
+/*}*/
+/*.editClicked{*/
+/*    background-image: url('../img/save.png');*/
+/*    background-size: cover;*/
+/*    background-repeat: no-repeat;*/
+/*    background-position: center;*/
+/*    width: 50px;*/
+/*    height: 50px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    outline: none;*/
+/*}*/
+
+/*.delete{*/
+/*    background-image: url('../img/delete.png');*/
+/*    background-size: cover;*/
+/*    background-repeat: no-repeat;*/
+/*    background-position: center;*/
+/*    width: 50px;*/
+/*    height: 50px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    outline: none;*/
+/*}*/
+
+
