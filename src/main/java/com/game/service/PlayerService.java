@@ -26,7 +26,7 @@ public class PlayerService {
         return playerRepository.getAll(pageNumber, pageSize);
     }
 
-    public Integer getAllCount() {
+    public Long getAllCount() {
         return playerRepository.getAllCount();
     }
 

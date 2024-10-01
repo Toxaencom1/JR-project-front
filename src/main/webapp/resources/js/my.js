@@ -37,7 +37,7 @@ function getPlayers(pageSize, pageNumber) {
 }
 
 function createPaginationButtons(pageSize, pageNumber) {
-    let getTotal = getTotalServerAccounts();
+    let getTotal = totalAccounts;
     const totalPages = Math.ceil(getTotal / pageSize);
     const $pagination = $('#pagination');
     $pagination.empty();
@@ -73,7 +73,6 @@ function getTotalServerAccounts() {
 }
 
 function getTotalPages(pageSize) {
-    const totalAccounts = getTotalServerAccounts();
     return Math.ceil(totalAccounts / pageSize);
 }
 
@@ -99,6 +98,7 @@ function deleteAccount(playerId) {
             url: `/rest/players/${playerId}`,
             type: 'DELETE',
             success: function () {
+                totalAccounts = getTotalServerAccounts();
                 reDraw()
             }
         });
@@ -191,6 +191,7 @@ function saveFromEdit(id) {
             }
         });
     }
+
 }
 
 function createNewAccount(){
@@ -225,6 +226,7 @@ function createNewAccount(){
             data: JSON.stringify(playerInfo),
             success: function () {
                 alert("Congratulations! Account created.");
+                totalAccounts = getTotalServerAccounts();
                 clearInputFields();
                 reDraw();
             },
