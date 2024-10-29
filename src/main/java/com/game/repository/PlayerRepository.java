@@ -2,7 +2,6 @@ package com.game.repository;
 
 import com.game.config.DataBaseConfig;
 import com.game.entity.Player;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -14,13 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
 public class PlayerRepository {
-    private final DataBaseConfig dataBaseConfig;
+    private final SessionFactory sessionFactory = DataBaseConfig.buildSessionFactory();
+
 
     public List<Player> getAll(int pageNumber, int pageSize) {
-        try (SessionFactory sessionFactory = dataBaseConfig.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Player> query = session.createQuery("from Player", Player.class);
             query.setFirstResult(pageNumber * pageSize);
             query.setMaxResults(pageSize);
@@ -32,8 +30,7 @@ public class PlayerRepository {
     }
 
     public Long getAllCount() {
-        try (SessionFactory sessionFactory = dataBaseConfig.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Long> query = session.createQuery("select count(p) from Player p", Long.class);
             return query.uniqueResult();
         } catch (Exception e) {
@@ -43,8 +40,7 @@ public class PlayerRepository {
     }
 
     public Player save(Player player) {
-        try (SessionFactory sessionFactory = dataBaseConfig.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.persist(player);
             transaction.commit();
@@ -56,8 +52,7 @@ public class PlayerRepository {
     }
 
     public Player update(Player player) {
-        try (SessionFactory sessionFactory = dataBaseConfig.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.merge(player);
             transaction.commit();
@@ -69,8 +64,7 @@ public class PlayerRepository {
     }
 
     public Optional<Player> findById(long id) {
-        try (SessionFactory sessionFactory = dataBaseConfig.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return Optional.of(session.find(Player.class, id));
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -79,8 +73,7 @@ public class PlayerRepository {
     }
 
     public void delete(Player player) {
-        try (SessionFactory sessionFactory = dataBaseConfig.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.remove(player);
             transaction.commit();
